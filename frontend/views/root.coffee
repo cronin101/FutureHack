@@ -12,8 +12,6 @@ create_map = (user_position) ->
       new nokia.maps.map.component.Behavior(), # Map Pan/Zoom
     ]
   }
-  console.log 'first'
-  console.log map
 
   standardMarker = new nokia.maps.map.StandardMarker user_location, {text: "Me"}
   map.objects.add standardMarker
@@ -38,8 +36,7 @@ $ ->
         for point in data.features
           coords = point.geometry.coordinates.reverse()
           clusterProvider.add {latitude: coords[0], longitude: coords[1]}
-         # marker = new nokia.maps.map.StandardMarker coords
-         # map.objects.add marker
+
         clusterProvider.cluster()
 
     $('#cycle_racks').click ->
