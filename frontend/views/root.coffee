@@ -1,5 +1,16 @@
 $ ->
   App = {
+    be_a_monkey: (lat, lon) ->
+      @user_location = [lat, lon]
+      @user_marker.destroy()
+      @user_marker = new nokia.maps.map.StandardMarker @user_location, {text: ''}
+      @map.objects.add(@user_marker)
+      @user_bounding_box = new nokia.maps.geo.BoundingBox(@user_location)
+      zoom_to = =>
+        @map.zoomTo(@user_bounding_box, true, 'default')
+
+      setTimeout zoom_to, 1000
+
     set_credentials: ->
       nokia.Settings.set 'app_id', 'dAeplRpqXA3pPri5MWDE'
       nokia.Settings.set 'app_code', '0taRg556WF-uaMDhXddFtw'
@@ -19,7 +30,8 @@ $ ->
         ]
       }
 
-      @map.objects.add(new nokia.maps.map.StandardMarker @user_location, {text: ''})
+      @user_marker = new nokia.maps.map.StandardMarker @user_location, {text: ''}
+      @map.objects.add(@user_marker)
       @user_bounding_box = new nokia.maps.geo.BoundingBox(@user_location)
       zoom_to = =>
         @map.zoomTo(@user_bounding_box, true, 'default')
@@ -29,7 +41,7 @@ $ ->
     find_nearest: ->
       $.getJSON '/cycle-racks.geojson', (data) =>
         gj = L.geoJson(data)
-        nearest = leafletKnn(gj).nearest(@user_location, 1)[0]
+        nearest = leafletKnn(gj).nearest(L.latLng(@user_location[0], @user_location[1]), 1)[0]
 
         router = new nokia.maps.routing.Manager()
         points = new nokia.maps.routing.WaypointParameterList()
