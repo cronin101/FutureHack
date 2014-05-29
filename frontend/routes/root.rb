@@ -1,6 +1,6 @@
 class FrontEnd < Sinatra::Application
   get '/' do
-    @title = 'FutureHack demo'
+    @title = 'Mapping demo'
     haml :root
   end
 
