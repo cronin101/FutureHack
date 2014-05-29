@@ -98,10 +98,10 @@ $ ->
   cycle_rack_toggle = ->
     if not App.cycle_racks_shown
       App.show_cycle_racks()
-      $(this).text("Hide cycle racks")
+      $(this).text("Hide cycle-racks")
     else
       App.hide_cycle_racks()
-      $(this).text("Show all cycle racks")
+      $(this).text("Show all cycle-racks")
 
   $('#cycle_racks').click cycle_rack_toggle
 
