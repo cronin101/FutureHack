@@ -1,3 +1,4 @@
-require ::File.join __dir__, 'app'
+root = ::File.dirname(__FILE__)
+require ::File.join(root, 'app')
 
 run FrontEnd.new

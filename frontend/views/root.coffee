@@ -73,7 +73,7 @@ $ ->
     show_cycle_racks: ->
       $.getJSON '/cycle-racks.geojson', (data) =>
         @rack_cluster = new nokia.maps.clustering.ClusterProvider @map, {
-          eps:         16,
+          eps:         10,
           minPts:      1,
           dataPoints:  []
         }
