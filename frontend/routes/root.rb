@@ -3,4 +3,8 @@ class FrontEnd < Sinatra::Application
     @title = 'FutureHack demo'
     haml :root
   end
+
+  get '/root.js' do
+    coffee :root
+  end
 end
