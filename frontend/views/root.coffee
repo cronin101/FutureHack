@@ -51,6 +51,7 @@ $ ->
         router.addObserver "state", (observedRouter, key, value) =>
           if value == "finished"
             routes = observedRouter.getRoutes()
+            @route_length = routes[0].summary.distance
             # Create the default map representation of a route
             @mapRoute = new nokia.maps.routing.component.RouteResultSet(routes[0]).container
             @map.objects.add(@mapRoute)

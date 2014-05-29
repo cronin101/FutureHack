@@ -1,4 +1,4 @@
-require 'active_record'
+#require 'active_record'
 
 =begin
 ActiveRecord::Base.establish_connection(
