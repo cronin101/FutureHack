@@ -8,7 +8,7 @@ $ ->
       mapContainer = document.getElementById("mapContainer")
 
       coords = user_position.coords
-      user_location = [coords.latitude, coords.longitude]
+      @user_location = [coords.latitude, coords.longitude]
 
       @map = new nokia.maps.map.Display mapContainer, {
         # Centred on Lat/Long for Glasgow
@@ -19,13 +19,44 @@ $ ->
         ]
       }
 
-      @map.objects.add(new nokia.maps.map.StandardMarker user_location, {text: ''})
-      @user_bounding_box = new nokia.maps.geo.BoundingBox(user_location)
+      @map.objects.add(new nokia.maps.map.StandardMarker @user_location, {text: ''})
+      @user_bounding_box = new nokia.maps.geo.BoundingBox(@user_location)
       zoom_to = =>
         @map.zoomTo(@user_bounding_box, true, 'default')
 
       setTimeout zoom_to, 1000
 
+    find_nearest: ->
+      $.getJSON '/cycle-racks.geojson', (data) =>
+        gj = L.geoJson(data)
+        nearest = leafletKnn(gj).nearest(@user_location, 1)[0]
+
+        router = new nokia.maps.routing.Manager()
+        points = new nokia.maps.routing.WaypointParameterList()
+        points.addCoordinate(new nokia.maps.geo.Coordinate(@user_location[0], @user_location[1]))
+        points.addCoordinate(new nokia.maps.geo.Coordinate(nearest.lat, nearest.lon))
+
+        router.addObserver "state", (observedRouter, key, value) =>
+          if value == "finished"
+            routes = observedRouter.getRoutes()
+            # Create the default map representation of a route
+            @mapRoute = new nokia.maps.routing.component.RouteResultSet(routes[0]).container
+            @map.objects.add(@mapRoute)
+
+            # Zoom to the bounding box of the route
+            @map.zoomTo(@mapRoute.getBoundingBox(), false, "default")
+
+        router.calculateRoute(points, [
+          type: "shortest",
+          transportModes: ["car"],
+          options: ["avoidTollroad", "avoidMotorway"],
+          trafficMode: "default"
+        ])
+      @directions_shown = true
+
+    hide_directions: ->
+      @mapRoute.destroy()
+      @directions_shown = false
 
     show_cycle_racks: ->
       $.getJSON '/cycle-racks.geojson', (data) =>
@@ -61,6 +92,16 @@ $ ->
       $(this).text("Show all cycle racks")
 
   $('#cycle_racks').click cycle_rack_toggle
+
+  nearest_rack_direction_toggle = ->
+    if not App.directions_shown
+      App.find_nearest()
+      $(this).text("Hide directions")
+    else
+      App.hide_directions()
+      $(this).text("Direct me to nearest cycle-rack")
+
+  $('#find_nearest').click nearest_rack_direction_toggle
 
   window.App = App
 
