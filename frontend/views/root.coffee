@@ -18,11 +18,63 @@ $ ->
         App.user_bounding_box = new Here.geo.BoundingBox App.user_location
         @zoom_to_bounding_box App.user_bounding_box
 
-      find_nearest_geojson_point: (json) ->
+      find_nearest_geojson_point: (json, target = App.user_location) ->
         parsed_geojson = L.geoJson json
-        user_leaf_geoloc = L.latLng.apply this, App.user_location
+        user_leaf_geoloc = L.latLng.apply this, target
         nearest_point = leafletKnn(parsed_geojson)
             .nearest(user_leaf_geoloc, 1)[0]
+
+      show_path_from_user_via_rack: (rack, loo) ->
+        user_nok_geoloc = new
+            Here.geo.Coordinate App.user_location[0], App.user_location[1]
+        rack_nok_geoloc = new
+            Here.geo.Coordinate rack.lat, rack.lon
+        loo_nok_geoloc = new
+            Here.geo.Coordinate loo.lat, loo.lon
+
+        points = new Here.routing.WaypointParameterList()
+        for point in [user_nok_geoloc, rack_nok_geoloc, loo_nok_geoloc]
+          points.addCoordinate point
+
+        router = new Here.routing.Manager()
+        router.addObserver "state", (observedRouter, key, value) =>
+          if value == "finished"
+            routes = observedRouter.getRoutes()
+            route = routes[0]
+            App.route_length = routes[0].summary.distance
+            container = new Here.map.Container()
+            container.objects.add( new Here.map.Polyline(route.shape, {
+              pen: new Here.util.Pen({
+                lineWidth: 5,
+                strokeColor: "#1080DD"
+              })
+            }))
+            App.map.objects.add container
+            for waypoint, i in route.waypoints
+              text = switch i
+                when 0 then 'Me'
+                when 1 then 'R'
+                when 2 then 'T'
+
+              color = switch i
+                when 1 then '#44AA44'
+                else '#1080DD'
+
+              container.objects.add (new Here.map.StandardMarker waypoint.originalPosition,
+                text: text
+                brush: (color: color)
+              )
+
+            # Zoom to the bounding box of the route, discard current map center
+            @zoom_to_bounding_box container.getBoundingBox(), false
+
+        router.calculateRoute points, [
+          type: "shortest"
+          transportModes: ["car"]
+          options: ["avoidTollroad", "avoidMotorway"]
+          trafficMode: "default"
+        ]
+
 
       show_path_from_user_to: (dest_lat, dest_lon) ->
         user_nok_geoloc = new
@@ -44,7 +96,7 @@ $ ->
                 Here.routing.component.RouteResultSet(routes[0]).container
             App.map.objects.add App.mapRoute
 
-            # Zoom to the bounding box of the route, discarding current map center
+            # Zoom to the bounding box of the route, discard current map center
             @zoom_to_bounding_box App.mapRoute.getBoundingBox(), false
 
         router.calculateRoute points, [
@@ -96,6 +148,15 @@ $ ->
       @rack_directions_shown = false
 
 
+    direct_to_nearest_loo: ->
+      $.getJSON '/toilets.geojson', (data) =>
+        nearest_loo = @actions.find_nearest_geojson_point data
+        loo_coords = [nearest_loo.lat, nearest_loo.lon]
+        $.getJSON 'cycle-racks.geojson', (rdata) =>
+          nearest_rack = @actions.find_nearest_geojson_point rdata, loo_coords
+          @actions.show_path_from_user_via_rack nearest_rack, nearest_loo
+
+
     show_cycle_racks: ->
       $.getJSON '/cycle-racks.geojson', (data) =>
         @rack_cluster = @actions.display_new_geojson_cluster data
@@ -132,6 +193,9 @@ $ ->
       ($ this).text "Direct me to the nearest cycle-rack"
 
   ($ '#find_nearest').click nearest_rack_direction_toggle
+
+  ($ '#find_me_a_loo').click ->
+    App.direct_to_nearest_loo()
 
   window.App = App
 
