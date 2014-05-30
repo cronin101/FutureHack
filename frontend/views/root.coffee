@@ -128,7 +128,7 @@ $ ->
       App.direct_to_nearest_rack()
       ($ this).text "Hide directions"
     else
-      App.hide_directions()
+      App.hide_rack_directions()
       ($ this).text "Direct me to the nearest cycle-rack"
 
   ($ '#find_nearest').click nearest_rack_direction_toggle
