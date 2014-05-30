@@ -26,7 +26,10 @@ $ ->
       @map = new Here.map.Display (document.getElementById "mapContainer"),
         center:      [55.858, -4.2590] # Centred on Lat/Long for Glasgow
         zoomLevel:   12
-        components:  [new Here.map.component.Behavior()] # Map Pan/Zoom
+        components:  [
+          new Here.map.component.Behavior() # Map Pan/Zoom
+          new nokia.maps.map.component.ZoomBar()
+        ]
 
       @user_marker = new Here.map.StandardMarker @user_location
       @map.objects.add @user_marker
