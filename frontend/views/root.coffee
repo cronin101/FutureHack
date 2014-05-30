@@ -2,9 +2,9 @@ $ ->
   Here = nokia.maps
   App = {
     actions: {
-      zoom_to_bounding_box: (box) ->
+      zoom_to_bounding_box: (box, keep_center = true) ->
         zoom = ->
-          App.map.zoomTo box, true, 'default'
+          App.map.zoomTo box, keep_center, 'default'
         setTimeout zoom, 1000
 
       set_user_location: (lat, lon) ->
@@ -20,9 +20,9 @@ $ ->
 
       find_nearest_geojson_point: (json) ->
         parsed_geojson = L.geoJson json
-        user_leaf_geoloc = L.latLng.apply App.user_location
-        nearest_point = (leafletKnn(parsed_geojson)
-            .nearest(user_leaf_geoloc, 1)[0])
+        user_leaf_geoloc = L.latLng.apply this, App.user_location
+        nearest_point = leafletKnn(parsed_geojson)
+            .nearest(user_leaf_geoloc, 1)[0]
 
       show_path_from_user_to: (dest_lat, dest_lon) ->
         user_nok_geoloc = new
@@ -44,8 +44,8 @@ $ ->
                 Here.routing.component.RouteResultSet(routes[0]).container
             App.map.objects.add App.mapRoute
 
-            # Zoom to the bounding box of the route
-            @zoom_to_bounding_box App.mapRoute.getBoundingBox
+            # Zoom to the bounding box of the route, discarding current map center
+            @zoom_to_bounding_box App.mapRoute.getBoundingBox(), false
 
         router.calculateRoute points, [
           type: "shortest"
@@ -61,7 +61,7 @@ $ ->
           dataPoints: []
 
         for point in data.features
-          coods = point.geometry.coordinates.reverse()
+          coords = point.geometry.coordinates.reverse()
           cluster.add latitude: coords[0], longitude: coords[1]
 
         cluster.cluster()
