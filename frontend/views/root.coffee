@@ -24,8 +24,7 @@ $ ->
       @user_location = [coords.latitude, coords.longitude]
 
       @map = new Here.map.Display (document.getElementById "mapContainer"),
-        # Centred on Lat/Long for Glasgow
-        center:      [55.858, -4.2590]
+        center:      [55.858, -4.2590] # Centred on Lat/Long for Glasgow
         zoomLevel:   12
         components:  [new Here.map.component.Behavior()] # Map Pan/Zoom
 
