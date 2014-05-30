@@ -19,4 +19,17 @@
         Show all cycle-racks
       %button.btn.btn-success#find_nearest
         Direct me to the nearest cycle-rack
-
+    %div.col-md-6
+      %h5
+        %span.glyphicon.glyphicon-star-empty
+        Looking for something else?
+      %h5{style: 'margin-top: 16px; display:inline;'}
+        Find me a nearby
+      %div.btn-group.dropup
+        %button.btn.btn-default.dropdown-toggle{'data-toggle' => 'dropdown'}
+          place of interest
+          %span.caret
+        %ul.dropdown-menu
+          %li
+            %a{href: '#'}
+              Restroom
