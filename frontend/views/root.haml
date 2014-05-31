@@ -4,6 +4,13 @@
       %span.glyphicon.glyphicon-pushpin
       Fancy a Ride?
     Glasgow's Open Transport Data, visualised using the HERE Maps API.
+    %div{style: 'float: right;'}
+      %button.btn.btn-warning{disabled: 'disabled'}
+        Re-locate
+      %button.btn.btn-success#cycle_toggle{disabled: 'disabled'}
+        Cycling
+      %button.btn.btn-primary#walk_toggle
+        Walking
 
 %div.container
   %hr
@@ -13,7 +20,7 @@
         %script{src: '/root.js'}
   %hr
   %div.row
-    %div.col-md-6
+    %div.col-md-6#rack_buttons
       %h5
         %span.glyphicon.glyphicon-off
         Need to find somewhere to park your bike?
@@ -21,12 +28,10 @@
         Show all cycle-racks
       %button.btn.btn-success#find_nearest
         Direct me to the nearest cycle-rack
-      %button.btn.btn-warning{disabled: 'disabled'}
-        Re-locate me
     %div.col-md-6
       %h5
         %span.glyphicon.glyphicon-star-empty
-        Looking for something else?
+        Looking for something specific?
       Direct me to a nearby
       %div.btn-group.dropup
         %button.btn.btn-default.dropdown-toggle#poi_button{'data-toggle' => 'dropdown'}
@@ -34,12 +39,19 @@
           %span.caret
         %ul.dropdown-menu
           %li
+            %a#find_me_a_bikeshop{href: '#'}
+              Bike Shop
+          %li
             %a#find_me_a_loo{href: '#'}
               Public Toilet
           %li
-            %a#find_me_a_bikeshop{href: '#'}
-              Bike Shop
-      via a cycle-rack.
+            %a#find_me_a_station{href: '#'}
+              Rail Station
+          %li
+            %a#find_me_a_takeaway{href: '#'}
+              Takeaway
+      %span#via_cycle_text
+        via a cycle-rack.
       %button.btn.btn-danger#clear_poi{style: 'display: none;'}
         Clear
 
