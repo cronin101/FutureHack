@@ -230,17 +230,15 @@ $ ->
         App.actions.clear_and_rezoom ->
           App.$find_nearest.text "Direct me to the nearest cycle-rack"
 
-    lock_buttons_after_poi: ->
+    lock_buttons_after_poi: (poi_text) ->
+      App.$poi_button.text poi_text
       App.$find_nearest.click() if App.rack_directions_shown
       for button in [App.$poi_button, App.$find_nearest]
         button.attr 'disabled', 'disabled'
       App.$clear_poi.show()
 
     show_nearest_loo: ->
-      App.$poi_button.text 'Public Toilet'
-      console.log this
-      Controller.lock_buttons_after_poi()
-      console.log this
+      Controller.lock_buttons_after_poi 'Public Toilet'
       App.direct_to_nearest_object '/toilets.geojson'
 
     reset_after_poi: ->
