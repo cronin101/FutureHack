@@ -1,15 +1,17 @@
-%div.jumbotron
+%div.jumbotron{style: 'padding: 28px;'}
   %div.container
     %h4
       %span.glyphicon.glyphicon-pushpin
-      Open Data Mapping Demo
-    Glasgow Open Transport Data visualised using the HERE Maps API.
+      Fancy a Ride?
+    Glasgow's Open Transport Data, visualised using the HERE Maps API.
 
 %div.container
+  %hr
   %div.row
     %div.col-md-12
       %div#mapContainer{style: 'width: 100%; height: 420px'}
         %script{src: '/root.js'}
+  %hr
   %div.row
     %div.col-md-6
       %h5
@@ -37,3 +39,4 @@
       via a cycle-rack.
       %button.btn.btn-danger#clear_poi{style: 'display: none;'}
         Clear
+
