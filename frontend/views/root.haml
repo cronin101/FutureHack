@@ -11,24 +11,20 @@
         Cycling
       %button.btn.btn-primary#walk_toggle
         Walking
+      %div.btn-group
+        %button.btn.btn-default.dropdown-toggle{'data-toggle' => 'dropdown'}
+          Visualisations
+          %span.caret
+        %ul.dropdown-menu
+          %li
+            %a{href: '#'}
+              Pollution Levels
 
 %div.container
-  %span#visualisation_pretext
-    Choose a
-  %div.btn-group
-    %button.btn.btn-default.dropdown-toggle{'data-toggle' => 'dropdown'}
-      visualisation
-      %span.caret
-    %ul.dropdown-menu
-      %li
-        %a{href: '#'}
-          Pollution Levels
-  %hr
   %div.row
     %div.col-md-12
       %div#mapContainer{style: 'width: 100%; height: 280px;'}
         %script{src: '/root.js'}
-  %hr
   %div.row
     %div.col-md-6#rack_buttons
       %h5
