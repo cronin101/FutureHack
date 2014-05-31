@@ -7,6 +7,7 @@ $ ->
     WALK: 0
     BIKE: 1
   }
+
   App = {
     transport_mode: (TransportModes.BIKE)
 
