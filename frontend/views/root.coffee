@@ -23,8 +23,8 @@ $ ->
 
         message
 
-      get_transport_options: ->
-        switch App.transport_mode
+      get_transport_options: (mode = TransportModes.WALK) ->
+        switch mode
           when TransportModes.WALK
             [
               type: "shortest"
@@ -350,4 +350,5 @@ $ ->
   App.$relocate_me.click Controller.relocate_user
 
   window.App = App
-
+  window.MAKEMEINGLASGOW = ->
+    App.actions.set_user_location 55.85, -4.26
