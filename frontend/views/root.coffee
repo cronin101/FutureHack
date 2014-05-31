@@ -1,19 +1,33 @@
 $ ->
+  GLASGOW_COORDS = [55.858, -4.2590]
   Here = nokia.maps
   App = {
     actions: {
+      clear_map: ->
+        undefined
+
+      reset_zoom: ->
+        App.map.set 'zoomLevel', 12
+        App.map.set 'center', GLASGOW_COORDS
+
       zoom_to_bounding_box: (box, keep_center = true) ->
         zoom = ->
           App.map.zoomTo box, keep_center, 'default'
         setTimeout zoom, 1000
 
-      set_user_location: (lat, lon) ->
+      place_user_marker: ->
+        App.user_marker = (new
+            Here.map.StandardMarker App.user_location, text: 'Me')
+        App.map.objects.add App.user_marker
+
+      remove_user_marker: ->
         if App.user_marker
           App.user_marker.destroy()
-        App.user_location = [lat, lon]
 
-        App.user_marker = new Here.map.StandardMarker App.user_location
-        App.map.objects.add App.user_marker
+      set_user_location: (lat, lon) ->
+        @remove_user_marker()
+        App.user_location = [lat, lon]
+        @place_user_marker()
 
         App.user_bounding_box = new Here.geo.BoundingBox App.user_location
         @zoom_to_bounding_box App.user_bounding_box
@@ -25,6 +39,7 @@ $ ->
             .nearest(user_leaf_geoloc, 1)[0]
 
       show_path_from_user_via_rack: (rack, loo) ->
+        @remove_user_marker()
         user_nok_geoloc = new
             Here.geo.Coordinate App.user_location[0], App.user_location[1]
         rack_nok_geoloc = new
@@ -43,10 +58,20 @@ $ ->
             route = routes[0]
             App.route_length = routes[0].summary.distance
             container = new Here.map.Container()
-            container.objects.add( new Here.map.Polyline(route.shape, {
+            @clear_map = (cb) ->
+              container.destroy()
+              @place_user_marker()
+              cb()
+            container.objects.add(new Here.map.Polyline(route.shape, {
+              arrows: {
+                "frequency": 4
+                "length": 2.3
+                "width": 1.0
+                "color": "#FFFC"
+              }
               pen: new Here.util.Pen({
                 lineWidth: 5,
-                strokeColor: "#1080DD"
+                strokeColor: "#2090ED"
               })
             }))
             App.map.objects.add container
@@ -57,10 +82,12 @@ $ ->
                 when 2 then 'T'
 
               color = switch i
-                when 1 then '#44AA44'
+                when 1 then '#FF4444'
+                when 2 then '#44FF44'
                 else '#1080DD'
 
-              container.objects.add (new Here.map.StandardMarker waypoint.originalPosition,
+              container.objects.add (new
+                  Here.map.StandardMarker waypoint.originalPosition,
                 text: text
                 brush: (color: color)
               )
@@ -77,6 +104,7 @@ $ ->
 
 
       show_path_from_user_to: (dest_lat, dest_lon) ->
+        @remove_user_marker()
         user_nok_geoloc = new
             Here.geo.Coordinate App.user_location[0], App.user_location[1]
         destination_nok_geoloc = new
@@ -92,12 +120,16 @@ $ ->
             routes = observedRouter.getRoutes()
             App.route_length = routes[0].summary.distance
             # Create the default map representation of a route
-            App.mapRoute = new
+            mapRoute = new
                 Here.routing.component.RouteResultSet(routes[0]).container
-            App.map.objects.add App.mapRoute
+            @clear_map = (cb) ->
+              mapRoute.destroy()
+              @place_user_marker()
+              cb()
+            App.map.objects.add mapRoute
 
             # Zoom to the bounding box of the route, discard current map center
-            @zoom_to_bounding_box App.mapRoute.getBoundingBox(), false
+            @zoom_to_bounding_box mapRoute.getBoundingBox(), false
 
         router.calculateRoute points, [
           type: "shortest"
@@ -128,7 +160,7 @@ $ ->
 
     create_map: (user_position) ->
       @map = new Here.map.Display (document.getElementById "mapContainer"),
-        center:      [55.858, -4.2590] # Centred on Lat/Long for Glasgow
+        center:      GLASGOW_COORDS 
         zoomLevel:   12
         components:  [new Here.map.component.Behavior()] # Map Pan/Zoom
 
@@ -144,8 +176,8 @@ $ ->
 
 
     hide_rack_directions: ->
-      @mapRoute.destroy()
-      @rack_directions_shown = false
+      @actions.clear_map ->
+        @rack_directions_shown = false
 
 
     direct_to_nearest_loo: ->
@@ -170,6 +202,10 @@ $ ->
 
 
   App.set_credentials()
+  App.$cycle_racks = $ '#cycle_racks'
+  App.$find_nearest = $ '#find_nearest'
+  App.$poi_button = $ '#poi_button'
+  App.$clear_poi = $ '#clear_poi'
 
   navigator.geolocation.getCurrentPosition (user_location) ->
     App.create_map user_location
@@ -177,25 +213,43 @@ $ ->
   cycle_rack_toggle = ->
     if not App.cycle_racks_shown
       App.show_cycle_racks()
-      ($ this).text "Hide cycle-racks"
+      App.$cycle_racks.text "Hide cycle-racks"
     else
       App.hide_cycle_racks()
-      ($ this).text "Show all cycle-racks"
+      App.$cycle_racks.text "Show all cycle-racks"
 
-  ($ '#cycle_racks').click cycle_rack_toggle
+  App.$cycle_racks.click cycle_rack_toggle
 
   nearest_rack_direction_toggle = ->
     if not App.rack_directions_shown
       App.direct_to_nearest_rack()
-      ($ this).text "Hide directions"
+      App.$find_nearest.text "Hide directions"
     else
-      App.hide_rack_directions()
-      ($ this).text "Direct me to the nearest cycle-rack"
+      App.rack_directions_shown = false
+      App.actions.clear_map ->
+        App.actions.reset_zoom()
+        App.actions.zoom_to_bounding_box App.user_bounding_box
+        App.$find_nearest.text "Direct me to the nearest cycle-rack"
 
-  ($ '#find_nearest').click nearest_rack_direction_toggle
+  App.$find_nearest.click nearest_rack_direction_toggle
 
   ($ '#find_me_a_loo').click ->
+    if App.rack_directions_shown
+      App.$find_nearest.click()
     App.direct_to_nearest_loo()
+    App.$poi_button.text 'Public Toilet'
+    for button in [App.$poi_button, App.$find_nearest]
+      button.attr 'disabled', 'disabled'
+    App.$clear_poi.show()
+
+  App.$clear_poi.click ->
+    App.actions.clear_map ->
+      App.$poi_button.html 'place of interest <span class="caret"></span>'
+      for button in [App.$poi_button, App.$find_nearest]
+        button.removeAttr 'disabled'
+      App.$clear_poi.hide()
+      App.actions.reset_zoom()
+      App.actions.zoom_to_bounding_box App.user_bounding_box
 
   window.App = App
 

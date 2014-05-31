@@ -19,17 +19,21 @@
         Show all cycle-racks
       %button.btn.btn-success#find_nearest
         Direct me to the nearest cycle-rack
+      %button.btn.btn-warning
+        Re-locate me
     %div.col-md-6
       %h5
         %span.glyphicon.glyphicon-star-empty
         Looking for something else?
-      %h5{style: 'margin-top: 16px; display:inline;'}
-        Direct me to a nearby
+      Direct me to a nearby
       %div.btn-group.dropup
-        %button.btn.btn-default.dropdown-toggle{'data-toggle' => 'dropdown'}
+        %button.btn.btn-default.dropdown-toggle#poi_button{'data-toggle' => 'dropdown'}
           place of interest
           %span.caret
         %ul.dropdown-menu
           %li
             %a#find_me_a_loo{href: '#'}
               Public Toilet
+      via a cycle-rack.
+      %button.btn.btn-danger#clear_poi{style: 'display: none;'}
+        Clear
