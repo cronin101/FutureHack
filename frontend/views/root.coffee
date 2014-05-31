@@ -56,6 +56,7 @@ $ ->
         @zoom_to_bounding_box App.user_bounding_box
 
       place_user_marker: ->
+        @remove_user_marker()
         App.user_marker = (new
             Here.map.StandardMarker App.user_location, text: 'Me')
         App.map.objects.add App.user_marker
@@ -65,7 +66,6 @@ $ ->
           App.user_marker.destroy()
 
       set_user_location: (lat, lon) ->
-        @remove_user_marker()
         App.user_location = [lat, lon]
         @place_user_marker()
 
@@ -277,7 +277,7 @@ $ ->
         button.attr 'disabled', 'disabled'
       App.$clear_poi.show()
 
-    set_destination: (e, i)->
+    set_destination: (e, i) ->
       switch App.transport_mode
         when TransportModes.BIKE then App.direct_to_nearest_object_via_rack e, i
         when TransportModes.WALK then App.direct_to_nearest_object e
