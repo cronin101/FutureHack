@@ -1,0 +1,427 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-turbo",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2014-05-06T09:13:02Z",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "way/138351533",
+      "properties": {
+        "@id": "way/138351533",
+        "building": "yes",
+        "name": "Dales Cycles",
+        "shop": "bicycle",
+        "source": "bing;survey"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -4.2483283,
+              55.8676379
+            ],
+            [
+              -4.2479496,
+              55.8678268
+            ],
+            [
+              -4.2481476,
+              55.8679518
+            ],
+            [
+              -4.2485263,
+              55.8677629
+            ],
+            [
+              -4.2483283,
+              55.8676379
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/171269264",
+      "properties": {
+        "@id": "way/171269264",
+        "addr:housenumber": "10",
+        "addr:postcode": "G5 0PJ",
+        "addr:street": "Commercial Court",
+        "building": "yes",
+        "building:levels": "1",
+        "name": "Number Ten",
+        "opening_hours": "Mo-Fr 10:00-16:00",
+        "shop": "bicycle",
+        "source": "bing;survey",
+        "website": "http://www.gorbalsrecycles.co.uk/",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -4.2443064,
+              55.8505347
+            ],
+            [
+              -4.2443088,
+              55.8504539
+            ],
+            [
+              -4.2441738,
+              55.8504527
+            ],
+            [
+              -4.2441715,
+              55.8505335
+            ],
+            [
+              -4.2441989,
+              55.8505337
+            ],
+            [
+              -4.2443064,
+              55.8505347
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/248163618",
+      "properties": {
+        "@id": "node/248163618",
+        "addr:city": "Glasgow",
+        "addr:housenumber": "176",
+        "addr:postcode": "G1 5LA",
+        "addr:street": "Saltmarket",
+        "name": "Billy Bilsland",
+        "phone": "0141 552 0841",
+        "service:bicycle:repair": "yes",
+        "service:bicycle:retail": "yes",
+        "shop": "bicycle",
+        "source": "survey",
+        "website": "http://www.billybilslandcycles.co.uk"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2461139,
+          55.8545027
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/248163654",
+      "properties": {
+        "@id": "node/248163654",
+        "name": "Alpine Bikes (Tiso)",
+        "shop": "bicycle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2453994,
+          55.8679305
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/250698422",
+      "properties": {
+        "@id": "node/250698422",
+        "name": "Alpine Bikes",
+        "shop": "bicycle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2683817,
+          55.8712389
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/259197206",
+      "properties": {
+        "@id": "node/259197206",
+        "created_by": "Potlatch 0.9c",
+        "name": "Gear of Glasgow",
+        "shop": "bicycle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2822189,
+          55.8723127
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/517529498",
+      "properties": {
+        "@id": "node/517529498",
+        "name": "West End Cycles",
+        "shop": "bicycle",
+        "source": "survey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2984697,
+          55.8718631
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/595349396",
+      "properties": {
+        "@id": "node/595349396",
+        "name": "Bikechain",
+        "shop": "bicycle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.3449002,
+          55.876701
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/663427889",
+      "properties": {
+        "@id": "node/663427889",
+        "name": "Common Wheel",
+        "shop": "bicycle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2846621,
+          55.8875801
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/746514480",
+      "properties": {
+        "@id": "node/746514480",
+        "contact:phone": "0141 6322733",
+        "name": "Craig MacMartin Cycles",
+        "shop": "bicycle",
+        "source": "survey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.276322,
+          55.8331293
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1110380030",
+      "properties": {
+        "@id": "node/1110380030",
+        "addr:housenumber": "814",
+        "addr:postcode": "G20 7ET",
+        "addr:street": "814 Garscube Road",
+        "name": "Bike Love",
+        "shop": "bicycle",
+        "website": "http://www.bikelove.co.uk/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2700026,
+          55.8795181
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1291964896",
+      "properties": {
+        "@id": "node/1291964896",
+        "addr:housenumber": "163",
+        "addr:postcode": "G1 5ED",
+        "addr:street": "Gallowgate",
+        "name": "Philip Lang Cycles",
+        "service:bicycle:repair": "yes",
+        "service:bicycle:retail": "yes",
+        "shop": "bicycle",
+        "website": "http://www.philiplangcycles.co.uk/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2391611,
+          55.8559003
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1363715449",
+      "properties": {
+        "@id": "node/1363715449",
+        "addr:housenumber": "143",
+        "addr:postcode": "G2 2SG",
+        "addr:street": "West Regent Street",
+        "email": "rig143@hotmail.co.uk",
+        "name": "Rig Bike Shop",
+        "note": "specialises in fixed gear single speed. Offers bike courier  service",
+        "opening_hours": "Mo- Sa 10:30-18:00; Su 12:00-17:00",
+        "phone": "07910 453 508",
+        "service:bicycle:rental": "yes",
+        "service:bicycle:repair": "yes",
+        "service:bicycle:retail": "yes",
+        "shop": "bicycle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2606891,
+          55.8634446
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1516531112",
+      "properties": {
+        "@id": "node/1516531112",
+        "operator": "Decathlon",
+        "service:bicycle:repair": "yes",
+        "service:bicycle:retail": "yes",
+        "shop": "bicycle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.128019,
+          55.868232
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1893653480",
+      "properties": {
+        "@id": "node/1893653480",
+        "addr:postcode": "G41 1QT",
+        "addr:street": "pollokshaws road",
+        "name": "Willy Bain's Bicycle Repair",
+        "shop": "bicycle",
+        "website": "www.bicyclerepair.co.uk"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2638025,
+          55.8417661
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2095153618",
+      "properties": {
+        "@id": "node/2095153618",
+        "addr:housenumber": "162",
+        "addr:street": "Dumbarton Road",
+        "amenity": "cafe",
+        "diet:gluten_free": "yes",
+        "name": "Siempre Bicycle Cafe",
+        "service:bicycle:rental": "no",
+        "service:bicycle:repair": "yes",
+        "service:bicycle:retail": "yes",
+        "shop": "bicycle",
+        "source": "survey",
+        "website": "http://www.siemprebicyclecafe.com/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.3000598,
+          55.8707179
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2151984866",
+      "properties": {
+        "@id": "node/2151984866",
+        "addr:housenumber": "60",
+        "addr:street": "shaw street",
+        "name": "Govan Community Bike Workshop",
+        "shop": "bicycle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.3161212,
+          55.862735
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2449936500",
+      "properties": {
+        "@id": "node/2449936500",
+        "addr:city": "Glasgow",
+        "addr:housenumber": "19",
+        "addr:postcode": "G2 1HY",
+        "addr:street": "Bath Street",
+        "name": "Evan's Cycles",
+        "shop": "bicycle"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2542484,
+          55.8634772
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2694705916",
+      "properties": {
+        "@id": "node/2694705916",
+        "addr:city": "Glasgow",
+        "addr:housenumber": "65",
+        "addr:postcode": "G3 8TX",
+        "addr:street": "Haugh Road",
+        "name": "Glasgow Bike Station",
+        "opening_hours": "10:00 - 18:00 Tuesday - Saturday and till 20:00pm Wednesday. Closed Sunday and Monday.",
+        "phone": "01412485409",
+        "shop": "bicycle",
+        "website": "http://www.thebikestation.org.uk/glasgow/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2902762,
+          55.8654268
+        ]
+      }
+    }
+  ]
+}

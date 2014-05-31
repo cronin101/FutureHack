@@ -43,7 +43,7 @@ $ ->
         nearest_point = leafletKnn(parsed_geojson)
             .nearest(user_leaf_geoloc, 1)[0]
 
-      show_path_from_user_via_rack: (rack, loo) ->
+      show_path_from_user_via_rack: (rack, loo, des_initial) ->
         @remove_user_marker()
         user_nok_geoloc = new
             Here.geo.Coordinate App.user_location[0], App.user_location[1]
@@ -84,7 +84,7 @@ $ ->
               text = switch i
                 when 0 then 'Me'
                 when 1 then 'R'
-                when 2 then 'T'
+                when 2 then des_initial
 
               color = switch i
                 when 1 then '#FF4444'
@@ -185,13 +185,13 @@ $ ->
         @rack_directions_shown = false
 
 
-    direct_to_nearest_object: (endpoint = '/toilets.geojson') ->
+    direct_to_nearest_object: (endpoint = '/toilets.geojson', des_initial) ->
       $.getJSON endpoint, (data) =>
-        nearest_obj = @actions.find_nearest_geojson_point data
-        obj_coords = [nearest_obj.lat, nearest_obj.lon]
+        near_obj = @actions.find_nearest_geojson_point data
+        obj_coords = [near_obj.lat, near_obj.lon]
         $.getJSON 'cycle-racks.geojson', (rdata) =>
-          nearest_rack = @actions.find_nearest_geojson_point rdata, obj_coords
-          @actions.show_path_from_user_via_rack nearest_rack, nearest_obj
+          near_rack = @actions.find_nearest_geojson_point rdata, obj_coords
+          @actions.show_path_from_user_via_rack near_rack, near_obj, des_initial
 
 
     show_cycle_racks: ->
@@ -239,7 +239,11 @@ $ ->
 
     show_nearest_loo: ->
       Controller.lock_buttons_after_poi 'Public Toilet'
-      App.direct_to_nearest_object '/toilets.geojson'
+      App.direct_to_nearest_object '/toilets.geojson', 'T'
+
+    show_nearest_bikeshop: ->
+      Controller.lock_buttons_after_poi 'Bike Shop'
+      App.direct_to_nearest_object '/bikeshops.geojson', 'B'
 
     reset_after_poi: ->
       App.actions.clear_and_rezoom ->
@@ -255,6 +259,7 @@ $ ->
   App.$cycle_racks.click Controller.toggle_cycle_racks
   App.$find_nearest.click Controller.toggle_nearest_rack_direction
   ($ '#find_me_a_loo').click Controller.show_nearest_loo
+  ($ '#find_me_a_bikeshop').click Controller.show_nearest_bikeshop
   App.$clear_poi.click Controller.reset_after_poi
 
   window.App = App
