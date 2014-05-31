@@ -15,6 +15,11 @@ $ ->
           App.map.zoomTo box, keep_center, 'default'
         setTimeout zoom, 1000
 
+      clear_and_rezoom: (cb) ->
+        @clear_map(cb)
+        @reset_zoom()
+        @zoom_to_bounding_box App.user_bounding_box
+
       place_user_marker: ->
         App.user_marker = (new
             Here.map.StandardMarker App.user_location, text: 'Me')
@@ -180,13 +185,13 @@ $ ->
         @rack_directions_shown = false
 
 
-    direct_to_nearest_loo: ->
-      $.getJSON '/toilets.geojson', (data) =>
-        nearest_loo = @actions.find_nearest_geojson_point data
-        loo_coords = [nearest_loo.lat, nearest_loo.lon]
+    direct_to_nearest_object: (endpoint = '/toilets.geojson') ->
+      $.getJSON endpoint, (data) =>
+        nearest_obj = @actions.find_nearest_geojson_point data
+        obj_coords = [nearest_obj.lat, nearest_obj.lon]
         $.getJSON 'cycle-racks.geojson', (rdata) =>
-          nearest_rack = @actions.find_nearest_geojson_point rdata, loo_coords
-          @actions.show_path_from_user_via_rack nearest_rack, nearest_loo
+          nearest_rack = @actions.find_nearest_geojson_point rdata, obj_coords
+          @actions.show_path_from_user_via_rack nearest_rack, nearest_obj
 
 
     show_cycle_racks: ->
@@ -207,49 +212,52 @@ $ ->
   App.$poi_button = $ '#poi_button'
   App.$clear_poi = $ '#clear_poi'
 
+  Controller = {
+    toggle_cycle_racks: ->
+      if not App.cycle_racks_shown
+        App.show_cycle_racks()
+        App.$cycle_racks.text "Hide cycle-racks"
+      else
+        App.hide_cycle_racks()
+        App.$cycle_racks.text "Show all cycle-racks"
+
+    toggle_nearest_rack_direction: ->
+      if not App.rack_directions_shown
+        App.direct_to_nearest_rack()
+        App.$find_nearest.text "Hide directions"
+      else
+        App.rack_directions_shown = false
+        App.actions.clear_and_rezoom ->
+          App.$find_nearest.text "Direct me to the nearest cycle-rack"
+
+    lock_buttons_after_poi: ->
+      App.$find_nearest.click() if App.rack_directions_shown
+      for button in [App.$poi_button, App.$find_nearest]
+        button.attr 'disabled', 'disabled'
+      App.$clear_poi.show()
+
+    show_nearest_loo: ->
+      App.$poi_button.text 'Public Toilet'
+      console.log this
+      Controller.lock_buttons_after_poi()
+      console.log this
+      App.direct_to_nearest_object '/toilets.geojson'
+
+    reset_after_poi: ->
+      App.actions.clear_and_rezoom ->
+        App.$poi_button.html 'place of interest <span class="caret"></span>'
+        for button in [App.$poi_button, App.$find_nearest]
+          button.removeAttr 'disabled'
+        App.$clear_poi.hide()
+  }
+
   navigator.geolocation.getCurrentPosition (user_location) ->
     App.create_map user_location
 
-  cycle_rack_toggle = ->
-    if not App.cycle_racks_shown
-      App.show_cycle_racks()
-      App.$cycle_racks.text "Hide cycle-racks"
-    else
-      App.hide_cycle_racks()
-      App.$cycle_racks.text "Show all cycle-racks"
-
-  App.$cycle_racks.click cycle_rack_toggle
-
-  nearest_rack_direction_toggle = ->
-    if not App.rack_directions_shown
-      App.direct_to_nearest_rack()
-      App.$find_nearest.text "Hide directions"
-    else
-      App.rack_directions_shown = false
-      App.actions.clear_map ->
-        App.actions.reset_zoom()
-        App.actions.zoom_to_bounding_box App.user_bounding_box
-        App.$find_nearest.text "Direct me to the nearest cycle-rack"
-
-  App.$find_nearest.click nearest_rack_direction_toggle
-
-  ($ '#find_me_a_loo').click ->
-    if App.rack_directions_shown
-      App.$find_nearest.click()
-    App.direct_to_nearest_loo()
-    App.$poi_button.text 'Public Toilet'
-    for button in [App.$poi_button, App.$find_nearest]
-      button.attr 'disabled', 'disabled'
-    App.$clear_poi.show()
-
-  App.$clear_poi.click ->
-    App.actions.clear_map ->
-      App.$poi_button.html 'place of interest <span class="caret"></span>'
-      for button in [App.$poi_button, App.$find_nearest]
-        button.removeAttr 'disabled'
-      App.$clear_poi.hide()
-      App.actions.reset_zoom()
-      App.actions.zoom_to_bounding_box App.user_bounding_box
+  App.$cycle_racks.click Controller.toggle_cycle_racks
+  App.$find_nearest.click Controller.toggle_nearest_rack_direction
+  ($ '#find_me_a_loo').click Controller.show_nearest_loo
+  App.$clear_poi.click Controller.reset_after_poi
 
   window.App = App
 
