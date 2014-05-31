@@ -5,7 +5,7 @@
       Fancy a Ride?
     Glasgow's Open Transport Data, visualised.
     %div{style: 'float: right;'}
-      %button.btn.btn-warning{disabled: 'disabled'}
+      %button.btn.btn-warning#relocate_me
         Re-locate
       %button.btn.btn-success#cycle_toggle{disabled: 'disabled'}
         Cycling
@@ -51,7 +51,7 @@
             %a#find_me_a_takeaway{href: '#'}
               Takeaway
       %span#via_cycle_text
-        via a cycle-rack.
+        via a cycle-rack [R].
       %button.btn.btn-danger#clear_poi{style: 'display: none;'}
         Clear
 

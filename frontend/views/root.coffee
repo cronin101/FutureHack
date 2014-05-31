@@ -12,6 +12,17 @@ $ ->
     transport_mode: (TransportModes.BIKE)
 
     actions: {
+      generate_bubble_prefix: (destination) ->
+        message = ''
+        if destination.layer.feature.properties
+          if destination.layer.feature.properties.StationName
+            message = destination.layer.feature.properties.StationName + ': '
+
+          if destination.layer.feature.properties.BusinessName
+            message = destination.layer.feature.properties.BusinessName + ": "
+
+        message
+
       get_transport_options: ->
         switch App.transport_mode
           when TransportModes.WALK
@@ -67,17 +78,17 @@ $ ->
         nearest_point = leafletKnn(parsed_geojson)
             .nearest(user_leaf_geoloc, 1)[0]
 
-      show_path_from_user_via_rack: (rack, loo, des_initial) ->
+      show_path_from_user_via_rack: (rack, dest, des_initial) ->
         @remove_user_marker()
         user_nok_geoloc = new
             Here.geo.Coordinate App.user_location[0], App.user_location[1]
         rack_nok_geoloc = new
             Here.geo.Coordinate rack.lat, rack.lon
-        loo_nok_geoloc = new
-            Here.geo.Coordinate loo.lat, loo.lon
+        dest_nok_geoloc = new
+            Here.geo.Coordinate dest.lat, dest.lon
 
         points = new Here.routing.WaypointParameterList()
-        for point in [user_nok_geoloc, rack_nok_geoloc, loo_nok_geoloc]
+        for point in [user_nok_geoloc, rack_nok_geoloc, dest_nok_geoloc]
           points.addCoordinate point
 
         router = new Here.routing.Manager()
@@ -86,8 +97,8 @@ $ ->
             routes = observedRouter.getRoutes()
             route = routes[0]
             route_length = routes[0].summary.distance
-            message = route_length + 'm to go!'
-            bubble = InfoBubbles.openBubble message,  user_nok_geoloc
+            message = App.actions.generate_bubble_prefix(dest) + route_length + 'm to go!'
+            bubble = InfoBubbles.openBubble message, user_nok_geoloc
             container = new Here.map.Container()
             @clear_map = (cb) ->
               container.destroy()
@@ -129,12 +140,14 @@ $ ->
 
         router.calculateRoute points, App.actions.get_transport_options()
 
-      show_path_from_user_to: (dest_lat, dest_lon) ->
+      show_path_from_user_to: (destination) ->
+        lat = destination.lat
+        lon = destination.lon
         @remove_user_marker()
         user_nok_geoloc = new
             Here.geo.Coordinate App.user_location[0], App.user_location[1]
         destination_nok_geoloc = new
-            Here.geo.Coordinate dest_lat, dest_lon
+            Here.geo.Coordinate lat, lon
 
         points = new Here.routing.WaypointParameterList()
         points.addCoordinate user_nok_geoloc
@@ -145,7 +158,7 @@ $ ->
           if value == "finished"
             routes = observedRouter.getRoutes()
             route_length = routes[0].summary.distance
-            message = route_length + 'm to go!'
+            message = App.actions.generate_bubble_prefix(destination) + route_length + 'm to go!'
             bubble = InfoBubbles.openBubble message,  user_nok_geoloc
             # Create the default map representation of a route
             mapRoute = new
@@ -198,7 +211,7 @@ $ ->
     direct_to_nearest_object: (endpoint = '/cycle-racks.geojson') ->
       $.getJSON endpoint, (data) =>
         nearest = @actions.find_nearest_geojson_point data
-        @actions.show_path_from_user_to nearest.lat, nearest.lon
+        @actions.show_path_from_user_to nearest
       @rack_directions_shown = true if App.transport_mode == TransportModes.BIKE
 
 
@@ -237,6 +250,7 @@ $ ->
   App.$walk_toggle = $ '#walk_toggle'
   App.$rack_buttons = $ '#rack_buttons'
   App.$via_cycle_text = $ '#via_cycle_text'
+  App.$relocate_me = $ '#relocate_me'
 
   Controller = {
     toggle_cycle_racks: ->
@@ -269,19 +283,19 @@ $ ->
         when TransportModes.WALK then App.direct_to_nearest_object e
 
     show_nearest_loo: ->
-      Controller.lock_buttons_after_poi 'Public Toilet'
+      Controller.lock_buttons_after_poi 'Public Toilet [T]'
       Controller.set_destination '/toilets.geojson', 'T'
 
     show_nearest_bikeshop: ->
-      Controller.lock_buttons_after_poi 'Bike Shop'
+      Controller.lock_buttons_after_poi 'Bike Shop [B]'
       Controller.set_destination '/bikeshops.geojson', 'B'
 
     show_nearest_rail_station: ->
-      Controller.lock_buttons_after_poi 'Rail Station'
+      Controller.lock_buttons_after_poi 'Rail Station [S]'
       Controller.set_destination '/glasgow-rail-references.geojson', 'S'
 
     show_nearest_takeaway: ->
-      Controller.lock_buttons_after_poi 'Takeaway'
+      Controller.lock_buttons_after_poi 'Takeaway [T]'
       Controller.set_destination '/takeaway-and-sandwich-shop.geojson', 'T'
 
     reset_after_poi: ->
@@ -300,6 +314,7 @@ $ ->
         App.transport_mode = TransportModes.WALK
         App.$rack_buttons.hide()
         App.$via_cycle_text.hide()
+        App.$clear_poi.click() if App.$clear_poi.is ':visible'
 
     select_cycling: ->
       App.actions.clear_and_rezoom ->
@@ -310,6 +325,14 @@ $ ->
         App.transport_mode = TransportModes.BIKE
         App.$rack_buttons.show()
         App.$via_cycle_text.show()
+        App.$clear_poi.click() if App.$clear_poi.is ':visible'
+
+    relocate_user: ->
+      App.$clear_poi.click() if App.$clear_poi.is ':visible'
+      App.actions.clear_and_rezoom ->
+        navigator.geolocation.getCurrentPosition (user_location) ->
+          coords = user_location.coords
+          App.actions.set_user_location coords.latitude, coords.longitude
   }
 
   navigator.geolocation.getCurrentPosition (user_location) ->
@@ -324,6 +347,7 @@ $ ->
   App.$clear_poi.click Controller.reset_after_poi
   App.$walk_toggle.click Controller.select_walking
   App.$cycle_toggle.click Controller.select_cycling
+  App.$relocate_me.click Controller.relocate_user
 
   window.App = App
 
