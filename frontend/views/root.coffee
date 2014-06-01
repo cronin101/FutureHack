@@ -13,13 +13,20 @@ $ ->
 
     actions: {
       generate_bubble_prefix: (destination) ->
+        console.log destination
         message = ''
         if destination.layer.feature.properties
           if destination.layer.feature.properties.StationName
             message = destination.layer.feature.properties.StationName + ': '
 
-          if destination.layer.feature.properties.BusinessName
+          else if destination.layer.feature.properties.BusinessName
             message = destination.layer.feature.properties.BusinessName + ": "
+
+          else if destination.layer.feature.properties.name
+            message = destination.layer.feature.properties.name + ": "
+
+          else if destination.layer.feature.properties.operator
+            message = destination.layer.feature.properties.operator + ": "
 
         message
 
